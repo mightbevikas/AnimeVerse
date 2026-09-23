@@ -1,0 +1,1396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AnimeVerse - Stream Your Favorite Anime</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #7c3aed;
+            --primary-dark: #6d28d9;
+            --secondary: #ec4899;
+            --accent: #06b6d4;
+            --bg-primary: #0a0a0f;
+            --bg-secondary: #12121a;
+            --bg-card: #1a1a24;
+            --bg-hover: #242430;
+            --text-primary: #ffffff;
+            --text-secondary: #a1a1b5;
+            --text-muted: #6b6b7b;
+            --border: #2a2a3a;
+            --gradient-1: linear-gradient(135deg, #7c3aed 0%, #ec4899 100%);
+            --gradient-2: linear-gradient(135deg, #06b6d4 0%, #7c3aed 100%);
+            --gradient-3: linear-gradient(180deg, transparent 0%, #0a0a0f 100%);
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg-secondary);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-dark);
+        }
+
+        /* Navigation */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            padding: 16px 48px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: all 0.3s ease;
+            background: rgba(10, 10, 15, 0.85);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid transparent;
+        }
+
+        .navbar.scrolled {
+            background: rgba(10, 10, 15, 0.95);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .nav-left {
+            display: flex;
+            align-items: center;
+            gap: 40px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 24px;
+            font-weight: 800;
+            text-decoration: none;
+            color: var(--text-primary);
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--gradient-1);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .logo span {
+            background: var(--gradient-1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 32px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: color 0.3s ease;
+            position: relative;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: var(--text-primary);
+        }
+
+        .nav-links a.active::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--gradient-1);
+            border-radius: 1px;
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .search-box {
+            display: flex;
+            align-items: center;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 10px 16px;
+            gap: 10px;
+            transition: all 0.3s ease;
+            width: 260px;
+        }
+
+        .search-box:focus-within {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.15);
+        }
+
+        .search-box i {
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+
+        .search-box input {
+            background: none;
+            border: none;
+            outline: none;
+            color: var(--text-primary);
+            font-size: 14px;
+            width: 100%;
+            font-family: inherit;
+        }
+
+        .search-box input::placeholder {
+            color: var(--text-muted);
+        }
+
+        .btn-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 16px;
+        }
+
+        .btn-icon:hover {
+            background: var(--bg-hover);
+            color: var(--text-primary);
+            border-color: var(--primary);
+        }
+
+        .btn-primary {
+            padding: 10px 24px;
+            border-radius: 12px;
+            background: var(--gradient-1);
+            border: none;
+            color: white;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: inherit;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(124, 58, 237, 0.4);
+        }
+
+        /* Hero Section */
+        .hero {
+            position: relative;
+            height: 85vh;
+            min-height: 600px;
+            display: flex;
+            align-items: flex-end;
+            padding: 0 48px 80px;
+            overflow: hidden;
+        }
+
+        .hero-bg {
+            position: absolute;
+            inset: 0;
+            z-index: 0;
+        }
+
+        .hero-bg img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center 20%;
+        }
+
+        .hero-bg::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: 
+                linear-gradient(180deg, rgba(10,10,15,0.3) 0%, rgba(10,10,15,0.7) 50%, var(--bg-primary) 100%),
+                linear-gradient(90deg, var(--bg-primary) 0%, transparent 50%);
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            max-width: 600px;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 14px;
+            border-radius: 20px;
+            background: rgba(124, 58, 237, 0.2);
+            border: 1px solid rgba(124, 58, 237, 0.4);
+            color: #a78bfa;
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .hero-badge .dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #a78bfa;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+        }
+
+        .hero-title {
+            font-size: 64px;
+            font-weight: 900;
+            line-height: 1.1;
+            margin-bottom: 16px;
+            letter-spacing: -2px;
+        }
+
+        .hero-title span {
+            background: var(--gradient-1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-meta {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 16px;
+            font-size: 14px;
+            color: var(--text-secondary);
+            flex-wrap: wrap;
+        }
+
+        .hero-meta .rating {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            color: #fbbf24;
+            font-weight: 600;
+        }
+
+        .hero-meta .separator {
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            background: var(--text-muted);
+        }
+
+        .hero-meta .tag {
+            padding: 4px 12px;
+            border-radius: 6px;
+            background: rgba(255,255,255,0.08);
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .hero-description {
+            font-size: 16px;
+            color: var(--text-secondary);
+            margin-bottom: 32px;
+            line-height: 1.7;
+            max-width: 500px;
+        }
+
+        .hero-actions {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+        }
+
+        .btn-play {
+            padding: 14px 32px;
+            border-radius: 14px;
+            background: var(--gradient-1);
+            border: none;
+            color: white;
+            font-weight: 700;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: inherit;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-play:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 35px rgba(124, 58, 237, 0.5);
+        }
+
+        .btn-secondary {
+            padding: 14px 28px;
+            border-radius: 14px;
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.15);
+            color: white;
+            font-weight: 600;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: inherit;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            backdrop-filter: blur(10px);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255,255,255,0.15);
+            border-color: rgba(255,255,255,0.3);
+        }
+
+        /* Sections */
+        .section {
+            padding: 40px 48px;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 28px;
+        }
+
+        .section-title {
+            font-size: 24px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .section-title .icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+        }
+
+        .icon-purple { background: rgba(124, 58, 237, 0.15); color: #a78bfa; }
+        .icon-pink { background: rgba(236, 72, 153, 0.15); color: #f472b6; }
+        .icon-cyan { background: rgba(6, 182, 212, 0.15); color: #22d3ee; }
+        .icon-orange { background: rgba(249, 115, 22, 0.15); color: #fb923c; }
+
+        .view-all {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.3s ease;
+        }
+
+        .view-all:hover {
+            color: var(--primary);
+            gap: 10px;
+        }
+
+        /* Anime Grid */
+        .anime-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 24px;
+        }
+
+        .anime-card {
+            position: relative;
+            border-radius: 16px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            background: var(--bg-card);
+        }
+
+        .anime-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+        }
+
+        .anime-card .poster {
+            position: relative;
+            aspect-ratio: 2/3;
+            overflow: hidden;
+        }
+
+        .anime-card .poster img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.6s ease;
+        }
+
+        .anime-card:hover .poster img {
+            transform: scale(1.1);
+        }
+
+        .anime-card .poster::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(180deg, transparent 40%, rgba(10,10,15,0.95) 100%);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .anime-card:hover .poster::after {
+            opacity: 1;
+        }
+
+        .anime-card .overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 16px;
+            transform: translateY(20px);
+            opacity: 0;
+            transition: all 0.4s ease;
+            z-index: 2;
+        }
+
+        .anime-card:hover .overlay {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .anime-card .play-btn {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: var(--gradient-1);
+            border: none;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            cursor: pointer;
+            margin: 0 auto 12px;
+            transition: transform 0.3s ease;
+            box-shadow: 0 8px 20px rgba(124, 58, 237, 0.5);
+        }
+
+        .anime-card .play-btn:hover {
+            transform: scale(1.15);
+        }
+
+        .anime-card .rating-badge {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            padding: 5px 10px;
+            border-radius: 8px;
+            background: rgba(10,10,15,0.8);
+            backdrop-filter: blur(10px);
+            font-size: 12px;
+            font-weight: 700;
+            color: #fbbf24;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            z-index: 2;
+        }
+
+        .anime-card .episode-badge {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            padding: 5px 10px;
+            border-radius: 8px;
+            background: var(--gradient-1);
+            font-size: 11px;
+            font-weight: 700;
+            color: white;
+            z-index: 2;
+        }
+
+        .anime-card .info {
+            padding: 14px 4px 4px;
+        }
+
+        .anime-card .info h3 {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 4px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .anime-card .info p {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        /* Continue Watching */
+        .continue-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            gap: 20px;
+        }
+
+        .continue-card {
+            display: flex;
+            gap: 16px;
+            padding: 12px;
+            border-radius: 16px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .continue-card:hover {
+            background: var(--bg-hover);
+            border-color: var(--primary);
+            transform: translateX(4px);
+        }
+
+        .continue-card .thumb {
+            position: relative;
+            width: 140px;
+            height: 80px;
+            border-radius: 10px;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .continue-card .thumb img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .continue-card .thumb .progress {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: rgba(255,255,255,0.2);
+        }
+
+        .continue-card .thumb .progress-bar {
+            height: 100%;
+            background: var(--gradient-1);
+            border-radius: 0 2px 2px 0;
+        }
+
+        .continue-card .details {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 4px;
+            min-width: 0;
+        }
+
+        .continue-card .details h4 {
+            font-size: 14px;
+            font-weight: 600;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .continue-card .details .ep {
+            font-size: 12px;
+            color: var(--primary);
+            font-weight: 500;
+        }
+
+        .continue-card .details .time {
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+
+        /* Genre Pills */
+        .genre-pills {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 24px;
+        }
+
+        .genre-pill {
+            padding: 8px 18px;
+            border-radius: 20px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            color: var(--text-secondary);
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .genre-pill:hover,
+        .genre-pill.active {
+            background: var(--gradient-1);
+            border-color: transparent;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(124, 58, 237, 0.3);
+        }
+
+        /* Trending Row */
+        .trending-row {
+            display: flex;
+            gap: 20px;
+            overflow-x: auto;
+            padding-bottom: 16px;
+            scroll-snap-type: x mandatory;
+        }
+
+        .trending-row::-webkit-scrollbar {
+            height: 4px;
+        }
+
+        .trending-card {
+            flex: 0 0 280px;
+            scroll-snap-align: start;
+            position: relative;
+            border-radius: 16px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.4s ease;
+        }
+
+        .trending-card:hover {
+            transform: scale(1.03);
+        }
+
+        .trending-card .poster {
+            position: relative;
+            aspect-ratio: 16/10;
+            overflow: hidden;
+        }
+
+        .trending-card .poster img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.6s ease;
+        }
+
+        .trending-card:hover .poster img {
+            transform: scale(1.1);
+        }
+
+        .trending-card .poster::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(180deg, transparent 30%, rgba(10,10,15,0.95) 100%);
+        }
+
+        .trending-card .content {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 20px;
+            z-index: 2;
+        }
+
+        .trending-card .content h3 {
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+
+        .trending-card .content .meta {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .trending-card .content .meta .rating {
+            color: #fbbf24;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        /* Footer */
+        .footer {
+            padding: 60px 48px 30px;
+            border-top: 1px solid var(--border);
+            margin-top: 40px;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 48px;
+            margin-bottom: 40px;
+        }
+
+        .footer-brand p {
+            color: var(--text-muted);
+            font-size: 14px;
+            margin-top: 16px;
+            line-height: 1.7;
+            max-width: 300px;
+        }
+
+        .footer h4 {
+            font-size: 14px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-secondary);
+        }
+
+        .footer ul {
+            list-style: none;
+        }
+
+        .footer ul li {
+            margin-bottom: 12px;
+        }
+
+        .footer ul a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 14px;
+            transition: color 0.3s ease;
+        }
+
+        .footer ul a:hover {
+            color: var(--primary);
+        }
+
+        .footer-bottom {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-top: 30px;
+            border-top: 1px solid var(--border);
+        }
+
+        .footer-bottom p {
+            color: var(--text-muted);
+            font-size: 13px;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 12px;
+        }
+
+        .social-links a {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            font-size: 16px;
+        }
+
+        .social-links a:hover {
+            background: var(--gradient-1);
+            border-color: transparent;
+            color: white;
+            transform: translateY(-3px);
+        }
+
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .navbar { padding: 16px 24px; }
+            .hero { padding: 0 24px 60px; }
+            .section { padding: 30px 24px; }
+            .footer { padding: 40px 24px 20px; }
+            .footer-content { grid-template-columns: 1fr 1fr; gap: 32px; }
+        }
+
+        @media (max-width: 768px) {
+            .nav-links { display: none; }
+            .search-box { display: none; }
+            .hero { height: 70vh; min-height: 500px; }
+            .hero-title { font-size: 40px; }
+            .hero-description { font-size: 14px; }
+            .anime-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 16px; }
+            .continue-grid { grid-template-columns: 1fr; }
+            .footer-content { grid-template-columns: 1fr; }
+            .footer-bottom { flex-direction: column; gap: 20px; }
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-in {
+            animation: fadeInUp 0.6s ease forwards;
+        }
+
+        /* Loading skeleton */
+        .skeleton {
+            background: linear-gradient(90deg, var(--bg-card) 25%, var(--bg-hover) 50%, var(--bg-card) 75%);
+            background-size: 200% 100%;
+            animation: skeleton 1.5s infinite;
+        }
+
+        @keyframes skeleton {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Navigation -->
+<nav class="navbar" id="navbar">
+    <div class="nav-left">
+        <a href="#" class="logo">
+            <div class="logo-icon">🎌</div>
+            <span>AnimeVerse</span>
+        </a>
+        <ul class="nav-links">
+            <li><a href="#" class="active">Home</a></li>
+            <li><a href="#">Trending</a></li>
+            <li><a href="#">Movies</a></li>
+            <li><a href="#">Series</a></li>
+            <li><a href="#">My List</a></li>
+        </ul>
+    </div>
+    <div class="nav-right">
+        <div class="search-box">
+            <i class="fas fa-search"></i>
+            <input type="text" placeholder="Search anime...">
+        </div>
+        <button class="btn-icon"><i class="fas fa-bell"></i></button>
+        <button class="btn-primary"><i class="fas fa-user"></i> Sign In</button>
+    </div>
+</nav>
+
+<!-- Hero Section -->
+<section class="hero">
+    <div class="hero-bg">
+        <img src="https://images.unsplash.com/photo-1578632767115-351597cf2477?w=1920&q=80" alt="Featured Anime">
+    </div>
+    <div class="hero-content animate-in">
+        <div class="hero-badge">
+            <span class="dot"></span>
+            #1 Trending This Week
+        </div>
+        <h1 class="hero-title">
+            Demon Slayer:<br>
+            <span>Infinity Castle</span>
+        </h1>
+        <div class="hero-meta">
+            <span class="rating"><i class="fas fa-star"></i> 9.8</span>
+            <span class="separator"></span>
+            <span>2024</span>
+            <span class="separator"></span>
+            <span>24 Episodes</span>
+            <span class="separator"></span>
+            <span class="tag">Action</span>
+            <span class="tag">Supernatural</span>
+        </div>
+        <p class="hero-description">
+            Tanjiro and the Hashira descend into the Infinity Castle for the final battle against Muzan Kibutsuji. Every slayer must give their all in this ultimate confrontation.
+        </p>
+        <div class="hero-actions">
+            <button class="btn-play"><i class="fas fa-play"></i> Watch Now</button>
+            <button class="btn-secondary"><i class="fas fa-plus"></i> Add to List</button>
+        </div>
+    </div>
+</section>
+
+<!-- Continue Watching -->
+<section class="section">
+    <div class="section-header">
+        <h2 class="section-title">
+            <div class="icon icon-cyan"><i class="fas fa-history"></i></div>
+            Continue Watching
+        </h2>
+        <a href="#" class="view-all">View All <i class="fas fa-arrow-right"></i></a>
+    </div>
+    <div class="continue-grid">
+        <div class="continue-card">
+            <div class="thumb">
+                <img src="https://images.unsplash.com/photo-1612036782180-6f0b6cd846fe?w=400&q=80" alt="Jujutsu Kaisen">
+                <div class="progress"><div class="progress-bar" style="width: 65%"></div></div>
+            </div>
+            <div class="details">
+                <h4>Jujutsu Kaisen</h4>
+                <span class="ep">Episode 24 - Shibuya Incident</span>
+                <span class="time">15:32 remaining</span>
+            </div>
+        </div>
+        <div class="continue-card">
+            <div class="thumb">
+                <img src="https://images.unsplash.com/photo-1580477667995-2b94f01c9516?w=400&q=80" alt="Attack on Titan">
+                <div class="progress"><div class="progress-bar" style="width: 30%"></div></div>
+            </div>
+            <div class="details">
+                <h4>Attack on Titan: Final Season</h4>
+                <span class="ep">Episode 28 - Dawn of Humanity</span>
+                <span class="time">18:45 remaining</span>
+            </div>
+        </div>
+        <div class="continue-card">
+            <div class="thumb">
+                <img src="https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?w=400&q=80" alt="One Piece">
+                <div class="progress"><div class="progress-bar" style="width: 85%"></div></div>
+            </div>
+            <div class="details">
+                <h4>One Piece</h4>
+                <span class="ep">Episode 1085 - Gear 5 Awakening</span>
+                <span class="time">04:12 remaining</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Trending Now -->
+<section class="section">
+    <div class="section-header">
+        <h2 class="section-title">
+            <div class="icon icon-pink"><i class="fas fa-fire"></i></div>
+            Trending Now
+        </h2>
+        <a href="#" class="view-all">View All <i class="fas fa-arrow-right"></i></a>
+    </div>
+    <div class="trending-row">
+        <div class="trending-card">
+            <div class="poster">
+                <img src="https://images.unsplash.com/photo-1618336753974-aae8e04506aa?w=600&q=80" alt="Spy x Family">
+            </div>
+            <div class="content">
+                <h3>Spy x Family</h3>
+                <div class="meta">
+                    <span class="rating"><i class="fas fa-star"></i> 9.2</span>
+                    <span>Action · Comedy</span>
+                </div>
+            </div>
+        </div>
+        <div class="trending-card">
+            <div class="poster">
+                <img src="https://images.unsplash.com/photo-1601850494422-3cf14624b0b3?w=600&q=80" alt="Chainsaw Man">
+            </div>
+            <div class="content">
+                <h3>Chainsaw Man</h3>
+                <div class="meta">
+                    <span class="rating"><i class="fas fa-star"></i> 9.0</span>
+                    <span>Action · Horror</span>
+                </div>
+            </div>
+        </div>
+        <div class="trending-card">
+            <div class="poster">
+                <img src="https://images.unsplash.com/photo-1560972550-aba3456b5564?w=600&q=80" alt="My Hero Academia">
+            </div>
+            <div class="content">
+                <h3>My Hero Academia</h3>
+                <div class="meta">
+                    <span class="rating"><i class="fas fa-star"></i> 8.9</span>
+                    <span>Action · Superhero</span>
+                </div>
+            </div>
+        </div>
+        <div class="trending-card">
+            <div class="poster">
+                <img src="https://images.unsplash.com/photo-1541562232579-512a21360020?w=600&q=80" alt="Tokyo Revengers">
+            </div>
+            <div class="content">
+                <h3>Tokyo Revengers</h3>
+                <div class="meta">
+                    <span class="rating"><i class="fas fa-star"></i> 8.7</span>
+                    <span>Action · Drama</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Popular This Season -->
+<section class="section">
+    <div class="section-header">
+        <h2 class="section-title">
+            <div class="icon icon-purple"><i class="fas fa-crown"></i></div>
+            Popular This Season
+        </h2>
+        <a href="#" class="view-all">View All <i class="fas fa-arrow-right"></i></a>
+    </div>
+    <div class="genre-pills">
+        <span class="genre-pill active">All</span>
+        <span class="genre-pill">Action</span>
+        <span class="genre-pill">Romance</span>
+        <span class="genre-pill">Fantasy</span>
+        <span class="genre-pill">Sci-Fi</span>
+        <span class="genre-pill">Slice of Life</span>
+        <span class="genre-pill">Horror</span>
+    </div>
+    <div class="anime-grid">
+        <div class="anime-card">
+            <div class="poster">
+                <img src="https://images.unsplash.com/photo-1612036782180-6f0b6cd846fe?w=400&q=80" alt="Jujutsu Kaisen">
+                <span class="rating-badge"><i class="fas fa-star"></i> 9.5</span>
+                <span class="episode-badge">EP 24</span>
+            </div>
+            <div class="overlay">
+                <button class="play-btn"><i class="fas fa-play"></i></button>
+            </div>
+            <div class="info">
+                <h3>Jujutsu Kaisen</h3>
+                <p>Action · Supernatural</p>
+            </div>
+        </div>
+        <div class="anime-card">
+            <div class="poster">
+                <img src="https://images.unsplash.com/photo-1580477667995-2b94f01c9516?w=400&q=80" alt="Attack on Titan">
+                <span class="rating-badge"><i class="fas fa-star"></i> 9.9</span>
+                <span class="episode-badge">EP 28</span>
+            </div>
+            <div class="overlay">
+                <button class="play-btn"><i class="fas fa-play"></i></button>
+            </div>
+            <div class="info">
+                <h3>Attack on Titan</h3>
+                <p>Action · Drama</p>
+            </div>
+        </div>
+        <div class="anime-card">
+            <div class="poster">
+                <img src="https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?w=400&q=80" alt="One Piece">
+                <span class="rating-badge"><i class="fas fa-star"></i> 9.7</span>
+                <span class="episode-badge">EP 1085</span>
+            </div>
+            <div class="overlay">
+                <button class="play-btn"><i class="fas fa-play"></i></button>
+            </div>
+            <div class="info">
+                <h3>One Piece</h3>
+                <p>Adventure · Fantasy</p>
+            </div>
+        </div>
+        <div class="anime-card">
+            <div class="poster">
+                <img src="https://images.unsplash.com/photo-1578632767115-351597cf2477?w=400&q=80" alt="Demon Slayer">
+                <span class="rating-badge"><i class="fas fa-star"></i> 9.8</span>
+                <span class="episode-badge">EP 24</span>
+            </div>
+            <div class="overlay">
+                <button class="play-btn"><i class="fas fa-play"></i></button>
+            </div>
+            <div class="info">
+                <h3>Demon Slayer</h3>
+                <p>Action · Supernatural</p>
+            </div>
+        </div>
+        <div class="anime-card">
+            <div class="poster">
+                <img src="https://images.unsplash.com/photo-1618336753974-aae8e04506aa?w=400&q=80" alt="Spy x Family">
+                <span class="rating-badge"><i class="fas fa-star"></i> 9.2</span>
+                <span class="episode-badge">EP 12</span>
+            </div>
+            <div class="overlay">
+                <button class="play-btn"><i class="fas fa-play"></i></button>
+            </div>
+            <div class="info">
+                <h3>Spy x Family</h3>
+                <p>Action · Comedy</p>
+            </div>
+        </div>
+        <div class="anime-card">
+            <div class="poster">
+                <img src="https://images.unsplash.com/photo-1601850494422-3cf14624b0b3?w=400&q=80" alt="Chainsaw Man">
+                <span class="rating-badge"><i class="fas fa-star"></i> 9.0</span>
+                <span class="episode-badge">EP 12</span>
+            </div>
+            <div class="overlay">
+                <button class="play-btn"><i class="fas fa-play"></i></button>
+            </div>
+            <div class="info">
+                <h3>Chainsaw Man</h3>
+                <p>Action · Horror</p>
+            </div>
+        </div>
+        <div class="anime-card">
+            <div class="poster">
+                <img src="https://images.unsplash.com/photo-1560972550-aba3456b5564?w=400&q=80" alt="My Hero Academia">
+                <span class="rating-badge"><i class="fas fa-star"></i> 8.9</span>
+                <span class="episode-badge">EP 25</span>
+            </div>
+            <div class="overlay">
+                <button class="play-btn"><i class="fas fa-play"></i></button>
+            </div>
+            <div class="info">
+                <h3>My Hero Academia</h3>
+                <p>Action · Superhero</p>
+            </div>
+        </div>
+        <div class="anime-card">
+            <div class="poster">
+                <img src="https://images.unsplash.com/photo-1541562232579-512a21360020?w=400&q=80" alt="Tokyo Revengers">
+                <span class="rating-badge"><i class="fas fa-star"></i> 8.7</span>
+                <span class="episode-badge">EP 24</span>
+            </div>
+            <div class="overlay">
+                <button class="play-btn"><i class="fas fa-play"></i></button>
+            </div>
+            <div class="info">
+                <h3>Tokyo Revengers</h3>
+                <p>Action · Drama</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- New Releases -->
+<section class="section">
+    <div class="section-header">
+        <h2 class="section-title">
+            <div class="icon icon-orange"><i class="fas fa-sparkles"></i></div>
+            New Releases
+        </h2>
+        <a href="#" class="view-all">View All <i class="fas fa-arrow-right"></i></a>
+    </div>
+    <div class="anime-grid">
+        <div class="anime-card">
+            <div class="poster">
+                <img src="https://images.unsplash.com/photo-1553949345-eb786bb3f7ba?w=400&q=80" alt="Solo Leveling">
+                <span class="rating-badge"><i class="fas fa-star"></i> 9.4</span>
+                <span class="episode-badge">NEW</span>
+            </div>
+            <div class="overlay">
+                <button class="play-btn"><i class="fas fa-play"></i></button>
+            </div>
+            <div class="info">
+                <h3>Solo Leveling</h3>
+                <p>Action · Fantasy</p>
+            </div>
+        </div>
+        <div class="anime-card">
+            <div class="poster">
+                <img src="https://images.unsplash.com/photo-1502134249126-9f3755a50d78?w=400&q=80" alt="Frieren">
+                <span class="rating-badge"><i class="fas fa-star"></i> 9.6</span>
+                <span class="episode-badge">NEW</span>
+            </div>
+            <div class="overlay">
+                <button class="play-btn"><i class="fas fa-play"></i></button>
+            </div>
+            <div class="info">
+                <h3>Frieren</h3>
+                <p>Adventure · Fantasy</p>
+            </div>
+        </div>
+        <div class="anime-card">
+            <div class="poster">
+                <img src="https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=400&q=80" alt="Dandadan">
+                <span class="rating-badge"><i class="fas fa-star"></i> 8.8</span>
+                <span class="episode-badge">NEW</span>
+            </div>
+            <div class="overlay">
+                <button class="play-btn"><i class="fas fa-play"></i></button>
+            </div>
+            <div class="info">
+                <h3>Dandadan</h3>
+                <p>Action · Comedy</p>
+            </div>
+        </div>
+        <div class="anime-card">
+            <div class="poster">
+                <img src="https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?w=400&q=80" alt="Blue Lock">
+                <span class="rating-badge"><i class="fas fa-star"></i> 8.5</span>
+                <span class="episode-badge">NEW</span>
+            </div>
+            <div class="overlay">
+                <button class="play-btn"><i class="fas fa-play"></i></button>
+            </div>
+            <div class="info">
+                <h3>Blue Lock</h3>
+                <p>Sports · Drama</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Footer -->
+<footer class="footer">
+    <div class="footer-content">
+        <div class="footer-brand">
+            <a href="#" class="logo">
+                <div class="logo-icon">🎌</div>
+                <span>AnimeVerse</span>
+            </a>
+            <p>Your ultimate destination for streaming the best anime series and movies. Watch thousands of episodes in HD quality.</p>
+        </div>
+        <div>
+            <h4>Browse</h4>
+            <ul>
+                <li><a href="#">Trending</a></li>
+                <li><a href="#">New Releases</a></li>
+                <li><a href="#">Popular</a></li>
+                <li><a href="#">Movies</a></li>
+            </ul>
+        </div>
+        <div>
+            <h4>Genres</h4>
+            <ul>
+                <li><a href="#">Action</a></li>
+                <li><a href="#">Romance</a></li>
+                <li><a href="#">Fantasy</a></li>
+                <li><a href="#">Horror</a></li>
+            </ul>
+        </div>
+        <div>
+            <h4>Support</h4>
+            <ul>
+                <li><a href="#">Help Center</a></li>
+                <li><a href="#">Contact Us</a></li>
+                <li><a href="#">Privacy Policy</a></li>
+                <li><a href="#">Terms of Service</a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <p>© 2024 AnimeVerse. All rights reserved. Made with ❤️ for anime fans.</p>
+        <div class="social-links">
+            <a href="#"><i class="fab fa-twitter"></i></a>
+            <a href="#"><i class="fab fa-discord"></i></a>
+            <a href="#"><i class="fab fa-instagram"></i></a>
+            <a href="#"><i class="fab fa-youtube"></i></a>
+        </div>
+    </div>
+</footer>
+
+<script>
+    // Navbar scroll effect
+    window.addEventListener('scroll', () => {
+        const navbar = document.getElementById('navbar');
+        if (window.scrollY > 50) {
+            navbar.classList.add('scrolled');
+        } else {
+            navbar.classList.remove('scrolled');
+        }
+    });
+
+    // Genre pill toggle
+    document.querySelectorAll('.genre-pill').forEach(pill => {
+        pill.addEventListener('click', function() {
+            document.querySelectorAll('.genre-pill').forEach(p => p.classList.remove('active'));
+            this.classList.add('active');
+        });
+    });
+
+    // Card click effect
+    document.querySelectorAll('.anime-card, .trending-card, .continue-card').forEach(card => {
+        card.addEventListener('click', function() {
+            this.style.transform = 'scale(0.97)';
+            setTimeout(() => {
+                this.style.transform = '';
+            }, 150);
+        });
+    });
+
+    // Intersection Observer for animations
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('animate-in');
+            }
+        });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.section').forEach(section => {
+        observer.observe(section);
+    });
+
+    // Smooth scroll for nav links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function(e) {
+            e.preventDefault();
+        });
+    });
+</script>
+
+</body>
+</html>
